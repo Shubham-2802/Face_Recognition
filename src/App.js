@@ -37,8 +37,25 @@ class App extends Component {
       imageURL: '',
       box: {},
       route: 'SignIn',
-      isSignedIn: false
+      isSignedIn: false,
+      user: {
+        id:'',
+        name:'',
+        email:'',
+        entries:0,
+        joined:''
+      }
     }
+  }
+
+  onLoadUser = (data) =>{
+    this.setState({user: {
+        id:data.id,
+        name:data.name,
+        email:data.email,
+        entries:data.entries,
+        joined:data.joined
+    }})
   }
 
   calculateFace = (data) => {
@@ -94,14 +111,17 @@ class App extends Component {
         <Navigation isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange}/>
         { this.state.route === 'home'
           ? <div>
-              <Logo/>
+              <div>
+                <Logo/>
+                {<h1>SMART BRAIN</h1>}
+              </div>
               <Rank/>
               <Imagelink onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit}/>
               <FaceRecognition box={this.state.box} imageURL={this.state.imageURL}/>
             </div>
           : (this.state.route === 'SignIn'
               ? <SignIn onRouteChange={this.onRouteChange}/>
-              : <Register onRouteChange={this.onRouteChange}/>
+              : <Register onLoadUser={this.onLoadUser} onRouteChange={this.onRouteChange}/>
             )   
         }
       </div>
