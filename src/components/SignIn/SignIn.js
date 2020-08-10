@@ -33,7 +33,7 @@ class SignIn extends Component{
 		.then(response => response.json())
 		.then(user => {
 			//console.log(user)
-			if(user === 'Success'){
+			if(user.id){
 				this.props.onLoadUser(user)
 				this.props.onRouteChange('home');
 			}
