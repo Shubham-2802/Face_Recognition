@@ -86,9 +86,23 @@ class App extends Component {
       app.models
       .predict(
         Clarifai.FACE_DETECT_MODEL, 
-        this.state.input
-         )
-      .then(response => this.displayFaceBox(this.calculateFace(response)))
+        this.state.input)
+      .then(response => {
+        if (response) {
+                fetch('http://localhost:3000/image',{
+                method: 'put',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                  id:this.state.user.id
+            })
+          })
+          .then(response => response.json())
+          .then(count => {
+            this.setState(Object.assign(this.state.user, { entries:count }))
+          })
+        }
+        this.displayFaceBox(this.calculateFace(response))
+      })
       .catch(err => console.log(err)); 
   }
 
@@ -111,16 +125,19 @@ class App extends Component {
         <Navigation isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange}/>
         { this.state.route === 'home'
           ? <div>
-              <div>
-                <Logo/>
-                {<h1>SMART BRAIN</h1>}
-              </div>
-              <Rank/>
-              <Imagelink onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit}/>
-              <FaceRecognition box={this.state.box} imageURL={this.state.imageURL}/>
+              <Logo/>
+              <Rank 
+                name={this.state.user.name} 
+                entries={this.state.user.entries}/>
+              <Imagelink 
+                onInputChange={this.onInputChange} 
+                onButtonSubmit={this.onButtonSubmit}/>
+              <FaceRecognition 
+                box={this.state.box} 
+                imageURL={this.state.imageURL}/>
             </div>
           : (this.state.route === 'SignIn'
-              ? <SignIn onRouteChange={this.onRouteChange}/>
+              ? <SignIn onLoadUser={this.onLoadUser} onRouteChange={this.onRouteChange}/>
               : <Register onLoadUser={this.onLoadUser} onRouteChange={this.onRouteChange}/>
             )   
         }
