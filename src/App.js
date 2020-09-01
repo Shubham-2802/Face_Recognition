@@ -17,10 +17,10 @@ const app = new Clarifai.App({
 const particlepara = {
                 particles: {
                     numbers: {
-                      value: 100,
+                      value: 900,
                       density: {
                         enable: true,
-                        value_area: 800
+                        value_area: 900
                     }
                   }
                 }
@@ -35,7 +35,8 @@ class App extends Component {
     this.state = {
       input:'',
       imageURL: '',
-      box: {},
+      box: [],
+      showImage:false,
       route: 'SignIn',
       isSignedIn: false,
       user: {
@@ -58,23 +59,22 @@ class App extends Component {
     }})
   }
 
-  calculateFace = (data) => {
-    const face = data.outputs[0].data.regions[0].region_info.bounding_box;
-    const image = document.getElementById('inputImage');
-    const width = Number(image.width);
-    const height = Number(image.height);
-    console.log(face, width, height);
-    return {
-      leftCol: face.left_col * width,
-      topRow: face.top_row * height,
-      rightCol: width - (face.right_col * width),
-      bottomRow: height - (face.bottom_row * height)
-    }
+  calculateFace = (data,i) => {
+      const face = data.outputs[0].data.regions[i].region_info.bounding_box;
+      const image = document.getElementById('inputImage');
+      const width = Number(image.width);
+      const height = Number(image.height);
+      return {
+        leftCol: face.left_col * width,
+        topRow: face.top_row * height,
+        rightCol: width - (face.right_col * width),
+        bottomRow: height - (face.bottom_row * height)
+      }
   }  
 
   displayFaceBox = (box) => {
-    console.log(box)
-    this.setState({box: box})
+    //console.log(box)
+    this.setState({box: [...this.state.box,box]});
   }
 
   onInputChange = (event) => {
@@ -82,11 +82,13 @@ class App extends Component {
   }
 
   onButtonSubmit = () => {
-      this.setState({imageURL:this.state.input})
+      this.setState({
+        box:[],
+        imageURL:this.state.input,
+        showImage:true
+      });
       app.models
-      .predict(
-        Clarifai.FACE_DETECT_MODEL, 
-        this.state.input)
+      .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
       .then(response => {
         if (response) {
                 fetch('http://localhost:3000/image',{
@@ -100,10 +102,13 @@ class App extends Component {
           .then(count => {
             this.setState(Object.assign(this.state.user, { entries:count }))
           })
-        }
-        this.displayFaceBox(this.calculateFace(response))
-      })
-      .catch(err => console.log(err)); 
+      }
+      var dat = response.outputs[0].data.regions
+      for(var i=0;i<dat.length;i++){
+        this.displayFaceBox(this.calculateFace(response,i));
+      }
+    })
+    .catch(err => console.log(err)); 
   }
 
   onRouteChange = (route) => {
@@ -134,7 +139,8 @@ class App extends Component {
                 onButtonSubmit={this.onButtonSubmit}/>
               <FaceRecognition 
                 box={this.state.box} 
-                imageURL={this.state.imageURL}/>
+                imageURL={this.state.imageURL}
+                showImage={this.state.showImage}/>
             </div>
           : (this.state.route === 'SignIn'
               ? <SignIn onLoadUser={this.onLoadUser} onRouteChange={this.onRouteChange}/>
