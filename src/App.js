@@ -5,6 +5,8 @@ import Clarifai from 'clarifai';
 import Navigation from './components/Navigation/Navigation';
 import SignIn from './components/SignIn/SignIn';
 import Register from './components/Register/Register';
+import ForgotPassword from './components/ForgotPassword/ForgotPassword';
+import NewerPassword from './components/NewerPassword/NewerPassword';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Logo from './components/Logo/Logo';
 import Imagelink from './components/ImageLinkForm/ImageLinkForm';
@@ -26,13 +28,7 @@ const particlepara = {
                 }
               }
 
-            
-
-class App extends Component {
-
-  constructor() {
-    super();
-    this.state = {
+const initialState = {
       input:'',
       imageURL: '',
       box: [],
@@ -46,7 +42,13 @@ class App extends Component {
         entries:0,
         joined:''
       }
-    }
+    }             
+
+class App extends Component {
+
+  constructor() {
+    super();
+    this.state = initialState;
   }
 
   onLoadUser = (data) =>{
@@ -116,8 +118,8 @@ class App extends Component {
       this.setState({isSignedIn:true})
     }
     else if (route === "signout"){
-      this.setState({isSignedIn:false})
-    }
+      this.setState(initialState)
+    } 
     this.setState({route: route})
     }
   
@@ -128,24 +130,30 @@ class App extends Component {
                 params={particlepara}
               />
         <Navigation isSignedIn={this.state.isSignedIn} onRouteChange={this.onRouteChange}/>
-        { this.state.route === 'home'
-          ? <div>
-              <Logo/>
-              <Rank 
-                name={this.state.user.name} 
-                entries={this.state.user.entries}/>
-              <Imagelink 
-                onInputChange={this.onInputChange} 
-                onButtonSubmit={this.onButtonSubmit}/>
-              <FaceRecognition 
-                box={this.state.box} 
-                imageURL={this.state.imageURL}
-                showImage={this.state.showImage}/>
-            </div>
-          : (this.state.route === 'SignIn'
-              ? <SignIn onLoadUser={this.onLoadUser} onRouteChange={this.onRouteChange}/>
-              : <Register onLoadUser={this.onLoadUser} onRouteChange={this.onRouteChange}/>
-            )   
+        { (this.state.route === 'ForgotPassword' 
+                    ? <ForgotPassword onRouteChange={this.onRouteChange}/>
+                    : (this.state.route === 'NewerPassword'
+                      ? <NewerPassword onRouteChange={this.onRouteChange}/>
+                      : this.state.route === 'home'
+                        ? <div>
+                            <Logo/>
+                            <Rank 
+                              name={this.state.user.name} 
+                              entries={this.state.user.entries}/>
+                            <Imagelink 
+                              onInputChange={this.onInputChange} 
+                              onButtonSubmit={this.onButtonSubmit}/>
+                            <FaceRecognition 
+                              box={this.state.box} 
+                              imageURL={this.state.imageURL}
+                              showImage={this.state.showImage}/>
+                          </div>
+                        : (this.state.route === 'SignIn'
+                           ?  <SignIn onLoadUser={this.onLoadUser} onRouteChange={this.onRouteChange}/>
+                           :  <Register onLoadUser={this.onLoadUser} onRouteChange={this.onRouteChange}/>
+                          )
+                    )
+                )
         }
       </div>
     );

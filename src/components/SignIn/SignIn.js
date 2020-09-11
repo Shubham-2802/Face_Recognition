@@ -1,4 +1,5 @@
 import React,{ Component } from 'react';
+import './SignIn.css';
 
 class SignIn extends Component{
 
@@ -78,8 +79,8 @@ class SignIn extends Component{
 			      />
 			    </div>
 			    <div className="lh-copy mt3">
-			      <a href="#0" onClick={() => onRouteChange('Register')} className="f6 link dim black db">Register</a>
-			      <a href="#0" className="f6 link dim black db">Forgot your password?</a>
+			      <p onClick={() => onRouteChange('Register')} className="pointer f6 link dim black db">Register</p>
+			      <p onClick={() => onRouteChange('ForgotPassword')} className="pointer f6 link dim black db">Forgot your password?</p>
 			    </div>
 			  </div>
 			</main>

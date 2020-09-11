@@ -38,7 +38,7 @@ class Register extends React.Component {
 		//this.props.onRouteChange('home')
 		.then(response => response.json())
 		.then(user => {
-			if(user){
+			if(user.id){
 				this.props.onLoadUser(user)
 				this.props.onRouteChange('SignIn')
 			}
