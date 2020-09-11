@@ -133,7 +133,7 @@ class App extends Component {
         { (this.state.route === 'ForgotPassword' 
                     ? <ForgotPassword onRouteChange={this.onRouteChange}/>
                     : (this.state.route === 'NewerPassword'
-                      ? <NewerPassword onRouteChange={this.onRouteChange}/>
+                      ? <NewerPassword onLoadUser={this.onLoadUser} onRouteChange={this.onRouteChange}/>
                       : this.state.route === 'home'
                         ? <div>
                             <Logo/>

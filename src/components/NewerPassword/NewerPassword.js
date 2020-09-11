@@ -5,9 +5,14 @@ class NewerPassword extends Component{
 	constructor(props){
 		super(props);
 		this.state = {
+			email:'',
 			NewPass:'',
 			ReNewPass:''
 		}
+	}
+
+	onEmailChange = (event) => {
+		this.setState({email:event.target.value})
 	}
 
 	onNewPassEnter = (event) => {
@@ -20,24 +25,28 @@ class NewerPassword extends Component{
 
 	onResetSubmit = () =>{
 		console.log(this.state)
-		this.props.onRouteChange('SignIn')
-		// fetch('http://localhost:3000/signIn',{
-		// 	method: 'POST',
-		// 	headers: {'Content-Type': 'application/json'},
-		// 	body: JSON.stringify({
-		// 		email:this.state.signInEmail,
-		// 		password:this.state.signInPassword
-		// 	})
-		// })
-		// //this.props.onRouteChange('home')
-		// .then(response => response.json())
-		// .then(user => {
-		// 	//console.log(user)
-		// 	if(user.id){
-		// 		this.props.onLoadUser(user)
-		// 		this.props.onRouteChange('home');
-		// 	}
-		// })
+		if(this.state.ReNewPass !== this.state.NewPass){
+			alert('The passwords does not match')
+		} else {
+			fetch('http://localhost:3000/Reset',{
+			method: 'POST',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify({
+				email:this.state.email,
+				password:this.state.NewPass,
+				password2:this.state.ReNewPass
+				})
+		   	})
+			.then(response => response.json())
+			.then(user => {
+				console.log(user)
+				if(user.email){
+					this.props.onLoadUser(user)
+					this.props.onRouteChange('SignIn');
+				}
+			})
+		}
+		
 	}
 
 	render() {
@@ -48,6 +57,16 @@ class NewerPassword extends Component{
 			  <div className="measure center">
 			    <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
 			      <legend className="f2 fw6 ph0 mh0">Reset Password</legend>
+			      <div className="mt3">
+			        <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
+			        <input 
+				        onChange={this.onEmailChange} 
+				        className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" 
+				        type="email" 
+				        name="email-address"  
+				        id="email-address"
+			        />
+			      </div> 
 			      <div className="mv3">
 			        <label className="db fw6 lh-copy f6" htmlFor="password">New Password</label>
 			        <input 

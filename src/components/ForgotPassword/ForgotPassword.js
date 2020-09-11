@@ -16,23 +16,21 @@ class ForgotPassword extends Component{
 
 	onForgotPasswordSubmit = () =>{
 		console.log(this.state)
-		this.props.onRouteChange('NewerPassword')
-		// fetch('http://localhost:3000/signIn',{
-		// 	method: 'POST',
-		// 	headers: {'Content-Type': 'application/json'},
-		// 	body: JSON.stringify({
-		// 		email:this.state.signInEmail,
-		// 	})
-		// })
-		// //this.props.onRouteChange('home')
-		// .then(response => response.json())
-		// .then(user => {
-		// 	//console.log(user)
-		// 	if(user.email){
-		// 		this.props.onLoadUser(user)
-		// 		this.props.onRouteChange('NewPassword');
-		// 	}
-		// })
+		// this.props.onRouteChange('NewerPassword')
+		fetch('http://localhost:3000/Forgot',{
+			method: 'POST',
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify({
+				email:this.state.signInEmail,
+			})
+		})
+		.then(response => response.json())
+		.then(user => {
+			console.log(user)
+			if(user.email){
+				this.props.onRouteChange('NewerPassword');
+			}
+		})
 	}
 
 	render() {
@@ -50,6 +48,7 @@ class ForgotPassword extends Component{
 				        type="email" 
 				        name="email-address"  
 				        id="email-address"
+				        required
 			        />
 			      </div> 
 			    </fieldset>
