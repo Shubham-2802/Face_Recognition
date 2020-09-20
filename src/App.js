@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 import Particles from 'react-particles-js';
-import Clarifai from 'clarifai';
 import Navigation from './components/Navigation/Navigation';
 import SignIn from './components/SignIn/SignIn';
 import Register from './components/Register/Register';
@@ -12,20 +11,24 @@ import Logo from './components/Logo/Logo';
 import Imagelink from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
 
-const app = new Clarifai.App({
- apiKey: '10780d471875486c940000ebf757f3ce'
-});
 
 const particlepara = {
-                particles: {
-                    numbers: {
-                      value: 900,
-                      density: {
-                        enable: true,
-                        value_area: 900
-                    }
+                 "particles": {
+                      "number": {
+                          "value": 50
+                      },
+                      "size": {
+                          "value": 3
+                      }
+                  },
+                  "interactivity": {
+                      "events": {
+                          "onhover": {
+                              "enable": true,
+                              "mode": "repulse"
+                          }
+                      }
                   }
-                }
               }
 
 const initialState = {
@@ -89,8 +92,14 @@ class App extends Component {
         imageURL:this.state.input,
         showImage:true
       });
-      app.models
-      .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
+      fetch('http://localhost:3000/imageurl',{
+                method: 'put',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                  input:this.state.input
+            })
+          })
+      .then(response => response.json())
       .then(response => {
         if (response) {
                 fetch('http://localhost:3000/image',{

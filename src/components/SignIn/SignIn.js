@@ -21,6 +21,9 @@ class SignIn extends Component{
 
 	onSigninSubmit = () =>{
 		console.log(this.state)
+		if(this.state.signInEmail==="" || this.state.signInPassword===""){
+			document.getElementById("status").innerHTML="Field values cannot be empty"
+		}
 		//this.props.onRouteChange('home')
 		fetch('http://localhost:3000/signIn',{
 			method: 'POST',
@@ -44,6 +47,7 @@ class SignIn extends Component{
 	render() {
 		const { onRouteChange } = this.props;
 		return (
+		<div>	
 		<article className="br2 ba dark-gray b--black-10 mv4 w-100 w-50-m w-25-l mw6 center shadow-1">
 			<main className="pa4 black-80">
 			  <div className="measure center">
@@ -56,7 +60,7 @@ class SignIn extends Component{
 				        className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" 
 				        type="email" 
 				        name="email-address"  
-				        id="email-address" required
+				        id="email-address"  required
 			        />
 			      </div>
 			      <div className="mv3">
@@ -87,6 +91,7 @@ class SignIn extends Component{
 			  </div>
 			</main>
 		</article>
+		<div><p id="status"></p></div></div>
 		);
 	}
 	
